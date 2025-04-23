@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import LoadScripts from '../../Hooks/LoadScripts'
+import useModalStore from '../../Store/modalStore'
 
 
 
 const Navbar = () => {
-LoadScripts()
+  const { openModal } = useModalStore();
+  LoadScripts()
   return (
     <div className="header-area-one">
       <div className="container-30">
@@ -35,7 +37,7 @@ LoadScripts()
                   </div>
 
                 </div>
-                <div className="single_action__haeader user_avatar__information openuptip" flow="down" tooltip="Profile">
+                <div className="single_action__haeader user_avatar__information openuptip" flow="down" tooltip="Settings">
                   <div className="avatar">
                     <img src="/assets/images/avatar/01.png" alt="avatar" />
                   </div>
@@ -52,34 +54,10 @@ LoadScripts()
                     <div className="user_body_content">
                       <ul className="items">
                         <li className="single_items">
-                          <a className="hader_popup_link" href="#">
-                            <i className="fa-light fa-user"></i>
-                            Profile
-                          </a>
-                        </li>
-                        <li className="single_items">
-                          <a className="hader_popup_link" href="#">
+                          <button onClick={openModal} className="hader_popup_link">
                             <i className="fa-regular fa-gear"></i>
                             Settings
-                          </a>
-                        </li>
-                        <li className="single_items">
-                          <a className="hader_popup_link" href="#">
-                            <i className="fa-light fa-person-snowmobiling"></i>
-                            Billing
-                          </a>
-                        </li>
-                        <li className="single_items">
-                          <a className="hader_popup_link" href="#">
-                            <i className="fa-solid fa-wave-pulse"></i>
-                            Activity
-                          </a>
-                        </li>
-                        <li className="single_items">
-                          <a className="hader_popup_link" href="#">
-                            <i className="fa-regular fa-bell"></i>
-                            Help
-                          </a>
+                          </button>
                         </li>
                       </ul>
                     </div>

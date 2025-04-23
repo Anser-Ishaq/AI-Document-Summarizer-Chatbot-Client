@@ -9,6 +9,7 @@ const LoadScripts = () => {
         "assets/js/plugins/bootstrap.min.js",
         "assets/js/plugins/swiper.js",
         "assets/js/main.js",
+        "assets/js/fileUpload.js"
       ];
 
       try {

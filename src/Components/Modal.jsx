@@ -1,35 +1,23 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React from "react";
+import { Modal, Button } from "react-bootstrap";
+import useModalStore from "../Store/modalStore";
 
-function Dynamic_Modal() {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+const Dynamic_Modal = () => {
+  const { isOpen, closeModal, content } = useModalStore();
 
   return (
-    <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch demo modal
-      </Button>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+    <Modal show={isOpen} onHide={closeModal}>
+      {/* <Modal.Header closeButton>
+        <Modal.Title>Global Modal</Modal.Title>
+      </Modal.Header> */}
+      <Modal.Body>{content}</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={closeModal}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
-}
+};
 
 export default Dynamic_Modal;

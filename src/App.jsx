@@ -5,14 +5,28 @@ import Register from './Components/Auth/Register'
 import MainLayout from './Layouts/MainLayout'
 import AuthLayout from './Layouts/AuthLayout'
 import ForgotPassword from './Components/Auth/Forgot';
+import useAuthStore from './Store/authStore';
+import { useEffect } from 'react';
+import ProtectedRoute from './Components/ProtectedRoutes';
 
 function App() {
 
+  const { initializeAuth, isInitialized } = useAuthStore();
+
+  useEffect(() => {
+    initializeAuth();
+  }, []);
+
+  if (!isInitialized) return null;
   return (
     <>
       <Routes>
         {/* Main Layout for normal pages */}
-        <Route path="/" element={<MainLayout />}>
+        <Route path="/" element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }>
           {/* <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} /> */}
         </Route>
@@ -22,7 +36,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-        {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
+          {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         </Route>
       </Routes>
     </>
