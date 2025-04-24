@@ -4,14 +4,17 @@ import useModalStore from "../Store/modalStore";
 import { uploadDocument, startChat } from "../api/documentsApi";
 import useChatStore from "../Store/chatStore";
 import FileUpload from "./Chatbot/FileUpload";
+
 const UploadAndChat = () => {
     const { setDocId, setChatId } = useChatStore();
     const { user } = useAuthStore();
     const { closeModal } = useModalStore();
 
-    const [documentId, setDocumentId] = useState(null);
+    // Form state - separate from the persisted data
+    const [currentDocId, setCurrentDocId] = useState(null);
     const [title, setTitle] = useState("");
     const [loading, setLoading] = useState(false);
+    const [formStep, setFormStep] = useState("upload"); // "upload" or "title"
 
     const handleFileUpload = async (e) => {
         const file = e.target.files?.[0];
@@ -20,8 +23,11 @@ const UploadAndChat = () => {
         setLoading(true);
         try {
             const data = await uploadDocument(user.id, file);
-            setDocumentId(data.data.id);
+            // Set both the current document ID for the form
+            // and the persisted document ID in the store
+            setCurrentDocId(data.data.id);
             setDocId(data.data.id);
+            setFormStep("title"); // Move to the title step
         } catch (err) {
             console.error("Upload failed", err);
             alert("Document upload failed");
@@ -31,12 +37,12 @@ const UploadAndChat = () => {
     };
 
     const handleStartChat = async () => {
-        if (!title || !documentId || !user?.id) return;
+        if (!title || !currentDocId || !user?.id) return;
 
         setLoading(true);
         try {
-            const res = await startChat(user.id, documentId, title);
-            console.log("data from start chat", res)
+            const res = await startChat(user.id, currentDocId, title);
+            console.log("data from start chat", res);
             alert("Chat started successfully");
             setChatId(res.data.id);
             closeModal();
@@ -48,14 +54,17 @@ const UploadAndChat = () => {
         }
     };
 
+    // Reset only the form state when starting a new upload
+    const handleNewUpload = () => {
+        setFormStep("upload");
+        // Don't clear the document ID in localStorage/store
+    };
 
     return (
-        <div style={{ flexDirection: "column" }} className="flex flex-col gap-3">
-            {!documentId ? (
+        <div style={{flexDirection:"column"}} className="flex flex-col gap-3">
+            {formStep === "upload" ? (
                 <>
                     <label>Upload Document</label>
-                    {/* <input type="file" onChange={handleFileUpload} />
-                    {loading && <p>Uploading...</p>} */}
                     <FileUpload handleFileUpload={handleFileUpload} loading={loading} />
                 </>
             ) : (
@@ -68,13 +77,22 @@ const UploadAndChat = () => {
                         className="form-control"
                         placeholder="e.g., Summarize my document"
                     />
-                    <button
-                        onClick={handleStartChat}
-                        className="btn btn-primary mt-2"
-                        disabled={loading}
-                    >
-                        {loading ? "Starting..." : "Start Chat"}
-                    </button>
+                    <div className="flex flex-col gap-2">
+                        <button
+                            onClick={handleStartChat}
+                            className="btn btn-primary"
+                            disabled={loading || !title}
+                        >
+                            {loading ? "Starting..." : "Start Chat"}
+                        </button>
+                        <button
+                            onClick={handleNewUpload}
+                            className="btn btn-secondary"
+                            disabled={loading}
+                        >
+                            Upload Different Document
+                        </button>
+                    </div>
                 </>
             )}
         </div>

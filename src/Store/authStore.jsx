@@ -17,19 +17,20 @@ const useAuthStore = create((set) => ({
   logout: () => {
     localStorage.removeItem("user");
     localStorage.removeItem("authToken");
+    localStorage.removeItem("chatId");
     set({ user: null, token: null });
   },
 
   initializeAuth: () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     const storedToken = localStorage.getItem("authToken");
-    if (storedUser && storedToken) {
+    // if (storedUser && storedToken) {
       set({
         user: storedUser || null,
         token: storedToken || null,
         isInitialized: true,
       });
-    }
+    // }
   }
 }));
 

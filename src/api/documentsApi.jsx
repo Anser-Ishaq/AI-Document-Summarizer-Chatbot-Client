@@ -24,7 +24,7 @@ export const startChat = async (userId, documentId, title) => {
     return response.data;
 };
 
-export const sendChatMessage = async ({ chatId, userId, message,}) => {
+export const sendChatMessage = async ({ chatId, userId, message, }) => {
     const response = await axiosInstance.post(`/api/chats/${chatId}/messages`, {
         userId,
         message,
@@ -34,8 +34,23 @@ export const sendChatMessage = async ({ chatId, userId, message,}) => {
 
 export const getChatByUserId = async ({ chatId, userId }) => {
     const response = await axiosInstance.get(`/api/chats/${chatId}`, {
-      params: { userId },
+        params: { userId },
     });
     return response.data;
-  };
-  
+};
+
+export const getAllChatsByUserId = async (userId) => {
+    const response = await axiosInstance.get("/api/chats", {
+        params: { userId },
+    });
+
+    return response.data?.data || [];
+};
+
+export const deleteChatById = async (chatId, userId) => {
+    const response = await axiosInstance.delete(`/api/chats/delete/${chatId}`, {
+        params: { userId },
+    });
+
+    return response.data;
+};
