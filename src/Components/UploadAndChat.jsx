@@ -4,11 +4,12 @@ import useModalStore from "../Store/modalStore";
 import { uploadDocument, startChat } from "../api/documentsApi";
 import useChatStore from "../Store/chatStore";
 import FileUpload from "./Chatbot/FileUpload";
-
+import { useNavigate } from "react-router-dom";
 const UploadAndChat = () => {
     const { setDocId, setChatId } = useChatStore();
     const { user } = useAuthStore();
     const { closeModal } = useModalStore();
+    const navigate = useNavigate()
 
     // Form state - separate from the persisted data
     const [currentDocId, setCurrentDocId] = useState(null);
@@ -27,7 +28,7 @@ const UploadAndChat = () => {
             // and the persisted document ID in the store
             setCurrentDocId(data.data.id);
             setDocId(data.data.id);
-            setFormStep("title"); // Move to the title step
+            setFormStep("title");
         } catch (err) {
             console.error("Upload failed", err);
             alert("Document upload failed");
@@ -44,7 +45,24 @@ const UploadAndChat = () => {
             const res = await startChat(user.id, currentDocId, title);
             console.log("data from start chat", res);
             alert("Chat started successfully");
+            // setChatId(res.data.id);
+            // navigate(`/chat/${res.data.id}`)
+            // Set both values in localStorage first
+            localStorage.setItem("documentId", currentDocId);
+            localStorage.setItem("chatId", res.data.id);
+
+            // Then update the store
+            setDocId(currentDocId);
             setChatId(res.data.id);
+
+            closeModal();
+
+            // Navigate to the new chat with a small delay to ensure state updates
+            setTimeout(() => {
+                navigate(`/chat/${res.data.id}`);
+                // Optional: Force a reload 
+                window.location.href = `/chat/${res.data.id}`;
+            }, 100);
             closeModal();
         } catch (err) {
             console.error("Failed to start chat", err);
@@ -61,7 +79,7 @@ const UploadAndChat = () => {
     };
 
     return (
-        <div style={{flexDirection:"column"}} className="flex flex-col gap-3">
+        <div style={{ flexDirection: "column" }} className="flex flex-col gap-3">
             {formStep === "upload" ? (
                 <>
                     <label>Upload Document</label>

@@ -8,8 +8,11 @@ import ForgotPassword from './Components/Auth/Forgot';
 import useAuthStore from './Store/authStore';
 import { useEffect } from 'react';
 import ProtectedRoute from './Components/ProtectedRoutes';
+import Home from './Components/Home';
+import LoadScripts from './Hooks/LoadScripts';
 
 function App() {
+  LoadScripts()
 
   const { initializeAuth, isInitialized } = useAuthStore();
 
@@ -30,6 +33,8 @@ function App() {
           {/* <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} /> */}
         </Route>
+        <Route index element={<Home />} />
+        <Route path="chat/:chatId" element={<MainLayout />} />
 
         {/* Auth Layout for login/register/etc */}
         <Route element={<AuthLayout />}>

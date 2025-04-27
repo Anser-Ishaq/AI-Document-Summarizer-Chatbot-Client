@@ -2,14 +2,16 @@ import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import useModalStore from "../Store/modalStore";
 
-const Dynamic_Modal = () => {
+const Dynamic_Modal = (props) => {
   const { isOpen, closeModal, content } = useModalStore();
 
   return (
-    <Modal show={isOpen} onHide={closeModal}>
-      {/* <Modal.Header closeButton>
-        <Modal.Title>Global Modal</Modal.Title>
-      </Modal.Header> */}
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      show={isOpen} onHide={closeModal}>
       <Modal.Body>{content}</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={closeModal}>

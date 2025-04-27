@@ -106,7 +106,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #333;
+  border: 1px solid #3F3EED;
+  background-color: rgb(233, 233, 255);
   border-radius: 8px;
   min-height: 2in;
   flex-direction: column;
@@ -201,4 +202,8 @@
 
 .btn-primary {
   font-size: 16px;
+}
+
+.question_answer__wrapper__chatbot .single__question__answer:last-child{
+  margin-bottom: 200px;
 }

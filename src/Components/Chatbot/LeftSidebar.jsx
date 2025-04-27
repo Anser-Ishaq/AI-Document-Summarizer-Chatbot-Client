@@ -4,6 +4,7 @@ import useModalStore from '../../Store/modalStore'
 import useAuthStore from '../../Store/authStore'
 import { useNavigate } from 'react-router-dom'
 import UploadAndChat from '../UploadAndChat'
+import SettingTabs from '../SettingTabs'
 const LeftSidebar = () => {
     const { openModal } = useModalStore()
     const navigate = useNavigate()
@@ -22,15 +23,14 @@ const LeftSidebar = () => {
                     <div className="single-menu-wrapper">
                         <button onClick={() => openModal(<UploadAndChat />)} className="single-menu active">
                             <div className="icon">
-                                <img src="/assets/images/icons/04.png" alt="icons" />
+                                <img src="/assets/images/logo/logo-02.png" alt="logo"/>
                             </div>
-                            <p>AI Chat Bot</p>
                         </button>
 
                     </div>
                     <div className="single-menu-wrapper">
 
-                        <button className="single-menu">
+                        <button onClick={() => openModal(<SettingTabs />)} className="single-menu">
                             <div className="icon">
                                 <img src="/assets/images/icons/08.png" alt="icons" />
                             </div>

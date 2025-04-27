@@ -3,11 +3,13 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import useChatStore from '../../Store/chatStore';
 import useAuthStore from '../../Store/authStore';
 import { getAllChatsByUserId, deleteChatById as deleteChatAPI } from '../../api/documentsApi';
+import { useNavigate } from 'react-router-dom';
 
 const RightSidebar = () => {
     const { user } = useAuthStore();
     const { setChatId, setChatTitles, chatTitles, chatId, setDocId } = useChatStore();
     const [chatList, setChatList] = useState([]);
+    const navigate = useNavigate();
     console.log("chat list", chatList);
 
     const fetchChats = async () => {
@@ -29,20 +31,20 @@ const RightSidebar = () => {
     const handleDeleteChat = async (idToDelete) => {
         try {
             await deleteChatAPI(idToDelete, user?.id);
-            
+
             // If the deleted chat is the current active chat
             if (idToDelete === chatId) {
                 console.log("Deleting active chat:", idToDelete);
-                
+
                 // Clear from localStorage
                 localStorage.removeItem("chatId");
                 localStorage.removeItem("documentId");
-                
+
                 // Clear from state
                 setChatId(null);
                 setDocId(null);
             }
-            
+
             // Refresh the chat list
             await fetchChats();
         } catch (error) {
@@ -75,13 +77,20 @@ const RightSidebar = () => {
                     <div className="chat-history-area-start">
                         {chatList.length > 0 ? (
                             chatList.map((chat) => (
-                                <div 
-                                    key={chat.id} 
+                                <div
+                                    key={chat.id}
                                     className={`single-history flex justify-between items-center ${chat.id === chatId ? 'active-chat' : ''}`}
-                                    onClick={() => setChatId(chat.id)}
+                                    style={chat.id === chatId ? { backgroundColor: '#E9E9FF' } : {}}
+                                    onClick={() => {
+                                        setChatId(chat.id);
+                                        setDocId(chat.document_id);
+                                        localStorage.setItem("chatId", chat.id);
+                                        localStorage.setItem("documentId", chat.document_id);
+                                        navigate(`/chat/${chat.id}`);
+                                    }}
                                 >
                                     <p>{chat.title}</p>
-                                    <Dropdown>
+                                    {/* <Dropdown>
                                         <Dropdown.Toggle
                                             as={CustomToggle}
                                             id={`dropdown-${chat.id}`}
@@ -94,7 +103,7 @@ const RightSidebar = () => {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            <Dropdown.Item 
+                                            <Dropdown.Item
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDeleteChat(chat.id);
@@ -103,9 +112,10 @@ const RightSidebar = () => {
                                                 🗑 Delete
                                             </Dropdown.Item>
                                         </Dropdown.Menu>
-                                    </Dropdown>
+                                    </Dropdown> */}
                                 </div>
                             ))
+
                         ) : (
                             <div className="no-chats-message">
                                 <p>No chat history</p>

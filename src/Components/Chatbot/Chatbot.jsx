@@ -9,6 +9,7 @@ import { getChatByUserId, sendChatMessage } from '../../api/documentsApi';
 import Loader from '../Loader';
 import RightSidebar from './RightSidebar';
 import LeftSidebar from './LeftSidebar';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const Chatbot = () => {
     LoadScripts();
@@ -18,9 +19,11 @@ const Chatbot = () => {
     const [chatData, setChatData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user } = useAuthStore();
-    const { chatId } = useChatStore();
-    const { chatTitles } = useChatStore();
-    
+    const { setChatId, chatId } = useChatStore();
+    // const { chatTitles } = useChatStore();
+    const { chatId: urlChatId } = useParams();
+    const navigate = useNavigate();
+
     console.log("chat id from bot", chatId);
     console.log("user id from bot", user?.id);
     console.log("chat data", chatData);
@@ -28,7 +31,7 @@ const Chatbot = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!message.trim() || !chatId) return;
-        
+
         setLoading(true);
         try {
             const response = await sendChatMessage({
@@ -78,7 +81,7 @@ const Chatbot = () => {
                 setChatData(null);
             }
         };
-        
+
         if (user?.id && chatId) {
             fetchChat();
         } else {
@@ -93,6 +96,15 @@ const Chatbot = () => {
         }
     }, [chatData?.messages]);
 
+    useEffect(() => {
+        // Set the active chat ID from URL parameters
+        if (urlChatId && urlChatId !== chatId) {
+            setChatId(urlChatId);
+        } else if (!urlChatId && chatId) {
+            // If no chat ID in URL but we have one active, update URL
+            navigate(`/chat/${chatId}`, { replace: true });
+        }
+    }, [urlChatId, chatId, setChatId, navigate]);
     if (!user?.id) return <Loader />;
 
     return (
@@ -106,8 +118,8 @@ const Chatbot = () => {
                             <div className="empty-chat-message">
                                 <h3 >No active chat</h3>
                                 <p >Start a new chat by uploading a document</p>
-                                <button 
-                                    className="btn btn-primary mt-4" 
+                                <button
+                                    className="btn btn-primary mt-4"
                                     onClick={handleCreateNewChat}
                                 >
                                     Create New Chat
@@ -135,15 +147,15 @@ const Chatbot = () => {
                                                     <img src="/assets/images/avatar/04.png" alt="ai avatar" />
                                                 </div>
                                                 <div className="answer_main__wrapper">
-                                                    <h4 className="common__title">{chatData.title}</h4>
+                                                    <h4 className="common__title">{chatData.documents.filename}</h4>
                                                     <p className="disc">{msg.content}</p>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
                                 ))}
-                                <div ref={bottomRef} />
                             </div>
+                            <div ref={bottomRef} />
                             <form onSubmit={handleSubmit} className="search-form">
                                 <input
                                     type="text"
@@ -157,11 +169,10 @@ const Chatbot = () => {
                             </form>
                         </>
                     ) : (
-                        <Loader />
+                        <>
+                            START CHATING
+                        </>
                     )}
-                    {/* <div className="copyright-area-bottom">
-                        <p> <a href="#">AI DOC Summarizer©</a> 2025. All Rights Reserved.</p>
-                    </div> */}
                 </div>
                 <RightSidebar />
             </div>
