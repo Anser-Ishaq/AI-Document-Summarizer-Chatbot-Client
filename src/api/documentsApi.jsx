@@ -54,3 +54,16 @@ export const deleteChatById = async (chatId, userId) => {
 
     return response.data;
 };
+
+export const deleteAllUserChats = async (userId) => {
+    const response = await axiosInstance.delete(`/api/chats/delete/allchats/${userId}`);
+    return response.data;
+};
+
+export const exportUserChats = async (userId) => {
+    const response = await axiosInstance.get(`/api/chats/export/allchats`, {
+        params: { userId },
+        responseType: 'blob',
+    });
+    return response;
+};

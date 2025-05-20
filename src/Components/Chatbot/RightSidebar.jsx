@@ -14,6 +14,7 @@ const RightSidebar = () => {
 
     const fetchChats = async () => {
         const chats = await getAllChatsByUserId(user?.id);
+        console.log("chat from rightsidebar", chats)
         if (chats.length > 0) {
             const sorted = chats.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
             setChatList(sorted);

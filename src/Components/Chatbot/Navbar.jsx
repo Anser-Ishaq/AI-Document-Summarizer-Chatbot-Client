@@ -37,35 +37,9 @@ const Navbar = () => {
                   </div>
 
                 </div>
-                <div className="single_action__haeader user_avatar__information openuptip" flow="down" tooltip="Settings">
+                <div className="single_action__haeader user_avatar__information openuptip"  >
                   <div className="avatar">
-                    <img src="/assets/images/avatar/01.png" alt="avatar" />
-                  </div>
-                  <div className="user_information_main_wrapper slide-down__click">
-                    <div className="user_header">
-                      <div className="main-avatar">
-                        <img src="/assets/images/avatar/user-2.svg" alt="user" />
-                      </div>
-                      <div className="user_naim-information">
-                        <h3 className="title">MR.Crow Kader</h3>
-                        <span className="desig">CEO, Valo How Masud</span>
-                      </div>
-                    </div>
-                    <div className="user_body_content">
-                      <ul className="items">
-                        <li className="single_items">
-                          <button onClick={openModal} className="hader_popup_link">
-                            <i className="fa-regular fa-gear"></i>
-                            Settings
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="popup-footer-btn">
-                      <a href="#" className="geex-content__header__popup__footer__link">Logout
-                        <i className="fa-light fa-arrow-right"></i>
-                      </a>
-                    </div>
+                    <img src="/assets/images/avatar/06.png" alt="avatar" />
                   </div>
                 </div>
               </div>

@@ -33,14 +33,14 @@ function App() {
           {/* <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} /> */}
         </Route>
-        <Route index element={<Home />} />
+        {/* <Route index element={<Home />} /> */}
         <Route path="chat/:chatId" element={<MainLayout />} />
 
         {/* Auth Layout for login/register/etc */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+          {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
           {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         </Route>
       </Routes>

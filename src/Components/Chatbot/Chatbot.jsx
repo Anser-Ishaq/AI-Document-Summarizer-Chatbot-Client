@@ -19,7 +19,7 @@ const Chatbot = () => {
     const [chatData, setChatData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user } = useAuthStore();
-    const { setChatId, chatId } = useChatStore();
+    const { setChatId, chatId, setChatMessagesData, chatMessagesData } = useChatStore();
     // const { chatTitles } = useChatStore();
     const { chatId: urlChatId } = useParams();
     const navigate = useNavigate();
@@ -27,6 +27,7 @@ const Chatbot = () => {
     console.log("chat id from bot", chatId);
     console.log("user id from bot", user?.id);
     console.log("chat data", chatData);
+    console.log("chat data from store", chatMessagesData);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -48,6 +49,11 @@ const Chatbot = () => {
 
                 // Update the chatData state with the new messages
                 setChatData((prev) => ({
+                    ...prev,
+                    messages: [...prev.messages, userMessage, aiMessage],
+                }));
+                // Update the chatData state with the new messages
+                setChatMessagesData((prev) => ({
                     ...prev,
                     messages: [...prev.messages, userMessage, aiMessage],
                 }));
@@ -76,9 +82,11 @@ const Chatbot = () => {
                 const res = await getChatByUserId({ chatId, userId: user?.id });
                 console.log("res from bot", res);
                 setChatData(res.data);
+                setChatMessagesData(res.data)
             } catch (err) {
                 console.error("Failed to load chat:", err);
                 setChatData(null);
+                setChatMessagesData(null)
             }
         };
 
@@ -86,6 +94,7 @@ const Chatbot = () => {
             fetchChat();
         } else {
             setChatData(null);
+            setChatMessagesData(null);
         }
     }, [user?.id, chatId]);
 
@@ -137,9 +146,7 @@ const Chatbot = () => {
                                                     <img src="/assets/images/avatar/06.png" alt="user avatar" />
                                                     <div className="question__user">{msg.content}</div>
                                                 </div>
-                                                <div className="edit__icon openuptip" tooltip="Edit It">
-                                                    <i className="fa-regular fa-pen-to-square"></i>
-                                                </div>
+ 
                                             </div>
                                         ) : (
                                             <div className="answer__area">

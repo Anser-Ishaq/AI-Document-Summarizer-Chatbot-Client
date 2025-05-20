@@ -46,10 +46,6 @@ const Login = () => {
                             <label htmlFor="password">Password:</label>
                             <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
 
-                            <div className="check-wrapper mb-3">
-                                <a href="/forgot-password">Forgot password?</a>
-                            </div>
-
                             <button type="submit" className="rts-btn btn-primary mb-3">Sign In</button>
                             <p>Don't have an account? <Link className="ml--5" to="/register">Sign Up for Free</Link></p>
                         </form>

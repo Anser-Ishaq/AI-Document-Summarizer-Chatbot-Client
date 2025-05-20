@@ -8,8 +8,8 @@ import SettingTabs from '../SettingTabs'
 const LeftSidebar = () => {
     const { openModal } = useModalStore()
     const navigate = useNavigate()
-    const {logout} = useAuthStore()
-
+    const {user,logout} = useAuthStore()
+    const userName = localStorage.getItem("userName")
     const handleLogout = () => {
         logout();
         navigate("/login");
@@ -30,12 +30,12 @@ const LeftSidebar = () => {
                     </div>
                     <div className="single-menu-wrapper">
 
-                        <button onClick={() => openModal(<SettingTabs />)} className="single-menu">
+                        {/* <button onClick={() => openModal(<SettingTabs />)} className="single-menu">
                             <div className="icon">
                                 <img src="/assets/images/icons/08.png" alt="icons" />
                             </div>
                             <p>Settings</p>
-                        </button>
+                        </button> */}
                         <button onClick={handleLogout} className="single-menu">
                             <div className="icon">
                                 <img src="/assets/images/icons/09.png" alt="icons" />
@@ -45,16 +45,15 @@ const LeftSidebar = () => {
                         <Dynamic_Modal />
                     </div>
                 </div>
-                <div className="bottom-user">
+                {/* <div className="bottom-user">
                     <div className="user-wrapper">
-                        <img src="/assets/images/avatar/06.png" alt="avatar" />
                         <div className="info">
-                            <h6 className="title">Anser Ishaq</h6>
-                            <a href="#">anser@gmail.com</a>
+                            <h6 className="title">{userName}</h6>
+                            <p>{user.email}</p>
                         </div>
                     </div>
 
-                </div>
+                </div> */}
             </div>
         </>
     )

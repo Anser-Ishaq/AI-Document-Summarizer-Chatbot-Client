@@ -15432,7 +15432,7 @@ body.sal-disabled [data-sal|=flip] {
 .dash-board-main-wrapper .left-side-bar .bottom-user {
   background: #F7F7FF;
   border: 1px solid #E5E4FF;
-  padding: 20px 26px;
+  padding: 20px 10px;
   border-radius: 6px;
   margin-right: 30px;
 }

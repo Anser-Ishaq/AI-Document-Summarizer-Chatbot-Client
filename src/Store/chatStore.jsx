@@ -5,14 +5,24 @@ const useChatStore = create((set) => ({
   documentId: typeof window !== "undefined" ? localStorage.getItem("documentId") : null,
   chatId: typeof window !== "undefined" ? localStorage.getItem("chatId") : null,
   chatTitles: [],
+  setChatMessages: [],
+  chatMessagesData: null, // New state for storing chat data
 
   setDocId: (id) => {
-    localStorage.setItem("documentId", id);
+    if (id === null) {
+      localStorage.removeItem("documentId");
+    } else {
+      localStorage.setItem("documentId", id);
+    }
     set({ documentId: id });
   },
 
   setChatId: (id) => {
-    localStorage.setItem("chatId", id);
+    if (id === null) {
+      localStorage.removeItem("chatId");
+    } else {
+      localStorage.setItem("chatId", id);
+    }
     set({ chatId: id });
   },
 
@@ -20,10 +30,14 @@ const useChatStore = create((set) => ({
     set({ chatTitles: titles });
   },
 
+  setChatMessagesData: (chatData) => { // New setter function
+    set({ chatMessagesData: chatData });
+  },
+
   resetChatData: () => {
     localStorage.removeItem("documentId");
     localStorage.removeItem("chatId");
-    set({ documentId: null, chatId: null });
+    set({ documentId: null, chatId: null, chatTitles: [], chatMessagesData: null }); // Reset chatMessagesData
   },
 }));
 

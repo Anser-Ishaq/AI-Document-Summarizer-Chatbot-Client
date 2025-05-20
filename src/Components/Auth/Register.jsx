@@ -29,6 +29,7 @@ const Register = () => {
 
             console.log('Signup successful:', response);
             localStorage.setItem("userId", response.data.user.id)
+            localStorage.setItem("userName",formData.username)
             // alert(response.message)
             showSuccess(response.message)
             setSuccess(response.message)

@@ -3,40 +3,26 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
-import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import useAlert from '../Hooks/useAlerts';
-// Reusable action button component
-const ActionButton = ({ variant, onClick, label }) => {
-    return (
-        <Button
-            style={{ fontSize: '10px', width: '30%', maxWidth: '120px', minWidth: '80px' }}
-            variant={variant}
-            className="rounded-pill"
-            onClick={onClick}
-        >
-            {label}
-        </Button>
-    );
-};
-
-// Reusable action row component
-const ActionRow = ({ label, buttonVariant, buttonLabel, onButtonClick }) => {
-    return (
-        <div className="d-flex justify-content-between align-items-center mb-3">
-            <span className="me-2">{label}</span>
-            <ActionButton
-                variant={buttonVariant}
-                label={buttonLabel}
-                onClick={onButtonClick}
-            />
-        </div>
-    );
-};
-
+import { ActionRow } from '../UI/TabButtons';
+import useAuthStore from '../Store/authStore';
+import { deleteAllUserChats } from '../api/documentsApi';
+import { useNavigate } from 'react-router-dom';
+import useChatStore from '../Store/chatStore';
+import { exportChatsToPDF } from '../Utils/ExportChats';
+import { deleteAccount } from '../api/authApi';
 function SettingTabs() {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 576);
     const { showError, showSuccess } = useAlert()
+    const { user } = useAuthStore()
+    const { setChatId, resetChatData, chatMessagesData } = useChatStore()
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteResult, setDeleteResult] = useState(null);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    console.log("chatMessagesData from settings", chatMessagesData)
 
     // Handle screen size changes
     useEffect(() => {
@@ -49,11 +35,36 @@ function SettingTabs() {
     }, []);
 
     // Action handlers - replace with your actual logic
-    const handleDeleteAllChats = () => {
-        console.log('Delete all chats clicked');
-        showSuccess("Chats deleted successfully");
+    const handleDeleteAllChats = async () => {
+        // Confirm with the user before proceeding
+        const confirmDelete = window.confirm(
+            'Are you sure you want to delete all your chats? This action cannot be undone.'
+        );
 
-        // Implement your delete all chats logic here
+        if (!confirmDelete) return;
+
+        try {
+            setIsDeleting(true);
+            setError(null);
+
+            // Call the API function to delete all chats
+            const result = await deleteAllUserChats(user.id);
+            resetChatData();
+            setDeleteResult(result);
+            console.log('All chats deleted successfully:', result);
+            showSuccess(result.message)
+            setChatId(null); // Make sure this is the same function from useChatStore
+            localStorage.removeItem("chatId");
+            localStorage.removeItem("documentId");
+            navigate("/", { replace: true })
+
+        } catch (err) {
+            console.error('Failed to delete chats:', err);
+            setError(err.response?.data?.message || 'Failed to delete chats');
+            showError(err.response?.data?.message || 'Failed to delete chats')
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const handleLogout = () => {
@@ -63,18 +74,46 @@ function SettingTabs() {
         // Implement your logout logic here
     };
 
-    const handleExportChats = () => {
-        console.log('Chats exported successfully');
-        showSuccess('Chats exported successfully')
-        // Implement your delete account logic here
+    const handleExportChats = async () => {
+        try {
+            if (!chatMessagesData || !chatMessagesData.messages || chatMessagesData.messages.length === 0) {
+                showError('No chat data available to export.');
+                return;
+            }
+
+            // Wrap in array because exportChatsToPDF expects an array of chat objects
+            await exportChatsToPDF([chatMessagesData], user.id);
+            showSuccess('Chats exported successfully');
+        } catch (error) {
+            console.error('Error exporting chats:', error);
+            showError('Failed to export chats');
+        }
     };
-    const handleDeleteAccount = () => {
-        console.log('Delete account clicked');
-        showSuccess("Account deleted successfully")
-        // Implement your delete account logic here
+    const handleDeleteAccount = async () => {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("chatId");
+            localStorage.removeItem("documentId");
+            localStorage.removeItem("user");
+            console.log('Delete account clicked');
+            showSuccess("Account deleted successfully")
+            window.location.href = "/login";
+        // try {
+        //     await deleteAccount(user?.id);
+        // } 
+        // catch (error) {
+        //     console.error("Delete account error:", error);
+        //     await deleteAccount(user?.id);
+        //     localStorage.removeItem("authToken");
+        //     localStorage.removeItem("chatId");
+        //     localStorage.removeItem("documentId");
+        //     localStorage.removeItem("user");
+        //     console.log('Delete account clicked');
+        //     showSuccess("Account deleted successfully")
+        //     window.location.href = "/login";
+        //     showError("Account Deleted");
+        // }
     };
 
-    // Render different tab layout based on screen size
     return (
         <Container fluid className="p-0">
             <Tab.Container id="settings-tabs" defaultActiveKey="first">
@@ -112,7 +151,7 @@ function SettingTabs() {
                                 <ActionRow
                                     label="Delete All Chats"
                                     buttonVariant="danger"
-                                    buttonLabel="Delete All"
+                                    buttonLabel={isDeleting ? 'Deleting...' : 'Delete'}
                                     onButtonClick={handleDeleteAllChats}
                                 />
                                 <ActionRow
@@ -128,7 +167,7 @@ function SettingTabs() {
                                     label="Export Chats"
                                     buttonVariant="primary"
                                     buttonLabel="Export"
-                                    onButtonClick={handleDeleteAccount}
+                                    onButtonClick={handleExportChats}
                                 />
                                 <ActionRow
                                     label="Delete Account"

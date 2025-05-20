@@ -5,11 +5,13 @@ import { uploadDocument, startChat } from "../api/documentsApi";
 import useChatStore from "../Store/chatStore";
 import FileUpload from "./Chatbot/FileUpload";
 import { useNavigate } from "react-router-dom";
+import useAlert from "../Hooks/useAlerts";
 const UploadAndChat = () => {
     const { setDocId, setChatId } = useChatStore();
     const { user } = useAuthStore();
     const { closeModal } = useModalStore();
     const navigate = useNavigate()
+    const {showSuccess, showError} = useAlert()
 
     // Form state - separate from the persisted data
     const [currentDocId, setCurrentDocId] = useState(null);
@@ -24,6 +26,7 @@ const UploadAndChat = () => {
         setLoading(true);
         try {
             const data = await uploadDocument(user.id, file);
+            console.log("data from upload", data);
             // Set both the current document ID for the form
             // and the persisted document ID in the store
             setCurrentDocId(data.data.id);
@@ -44,7 +47,8 @@ const UploadAndChat = () => {
         try {
             const res = await startChat(user.id, currentDocId, title);
             console.log("data from start chat", res);
-            alert("Chat started successfully");
+            showSuccess("Chat started successfully")
+            // alert("Chat started successfully");
             // setChatId(res.data.id);
             // navigate(`/chat/${res.data.id}`)
             // Set both values in localStorage first
@@ -66,7 +70,8 @@ const UploadAndChat = () => {
             closeModal();
         } catch (err) {
             console.error("Failed to start chat", err);
-            alert("Failed to start chat");
+            // alert("Failed to start chat");
+            showError("Failed to start chat")
         } finally {
             setLoading(false);
         }
@@ -87,8 +92,9 @@ const UploadAndChat = () => {
                 </>
             ) : (
                 <>
-                    <label>Enter Document Title</label>
+                    <label>Enter Chat Title</label>
                     <input
+                    style={{border:"2px solid #3F3EED", backgroundColor:"rgb(233, 233, 255)", borderRadius:"8px"}}
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
