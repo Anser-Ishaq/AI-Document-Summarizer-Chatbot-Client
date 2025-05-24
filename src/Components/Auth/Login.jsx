@@ -32,7 +32,7 @@ const Login = () => {
     return (
         <>
             <div className="login-form">
-                <div className="container">
+                <div className="auth-container">
                     <div className="login-card">
                         {/* <h2>Signup</h2> */}
                         <div className="head">

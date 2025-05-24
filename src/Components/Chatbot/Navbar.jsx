@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react'
 import LoadScripts from '../../Hooks/LoadScripts'
 import useModalStore from '../../Store/modalStore'
-
-
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const { openModal } = useModalStore();
+  const navigate = useNavigate()
+
+  const profileRoute = () => {
+    navigate("/profile")
+  }
   LoadScripts()
   return (
     <div className="header-area-one">
@@ -16,11 +20,21 @@ const Navbar = () => {
               <a href="/" className="logo">
                 <img src="/assets/images/logo/logo-01.png" alt="logo-image" />
               </a>
-              <div className="left-side-open-clouse" id="collups-left">
-                <img src="/assets/images/icons/01.svg" alt="icons" />
-              </div>
+
             </div>
             <div className="header-right">
+              <div class="button-area">
+                <Link to="/manage-subscription" class="rts-btn btn-primary"  >
+                  <img src="/assets/images/icons/02.svg" alt="icons" />
+                  Update
+                </Link>
+              </div>
+              <div className="left-logo-area">
+
+                <div className="left-side-open-clouse" id="collups-left">
+                  <img src="/assets/images/icons/01.svg" alt="icons" />
+                </div>
+              </div>
               <div className="action-interactive-area__header">
                 <div className="single_action__haeader rts-dark-light openuptip" flow="down" tooltip="Dark / Light" id="rts-data-toggle">
                   <div className="in-light">
@@ -38,7 +52,7 @@ const Navbar = () => {
 
                 </div>
                 <div className="single_action__haeader user_avatar__information openuptip"  >
-                  <div className="avatar">
+                  <div onClick={profileRoute} className="avatar">
                     <img src="/assets/images/avatar/06.png" alt="avatar" />
                   </div>
                 </div>

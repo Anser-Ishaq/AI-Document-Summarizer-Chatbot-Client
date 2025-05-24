@@ -10,6 +10,10 @@ import { useEffect } from 'react';
 import ProtectedRoute from './Components/ProtectedRoutes';
 import Home from './Components/Home';
 import LoadScripts from './Hooks/LoadScripts';
+import Subscription from './Components/Subscription/Subscription';
+import Profile from './Components/Profile/Profile';
+import Checkout from './Components/Subscription/Checkout';
+
 
 function App() {
   LoadScripts()
@@ -35,6 +39,9 @@ function App() {
         </Route>
         {/* <Route index element={<Home />} /> */}
         <Route path="chat/:chatId" element={<MainLayout />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="manage-subscription" element={<Subscription />} />
+        <Route path="checkout" element={<Checkout />} />
 
         {/* Auth Layout for login/register/etc */}
         <Route element={<AuthLayout />}>

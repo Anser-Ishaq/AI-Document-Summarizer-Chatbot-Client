@@ -7,7 +7,7 @@ const ForgotPassword = () => {
             <div className="dash-board-main-wrapper pt--40">
                 <div className="main-center-content-m-left center-content">
                     <div className="rts-register-area">
-                        <div className="container">
+                        <div className="auth-container">
                             <div className="row">
                                 <div className="col-lg-12">
                                     <div className="single-form-s-wrapper">

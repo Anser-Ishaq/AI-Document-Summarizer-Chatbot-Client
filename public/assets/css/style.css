@@ -17581,7 +17581,7 @@ body.modal-open {
 }
 
 .modal-dialog {
-  max-width: 80%;
+  max-width: 100%;
   scrollbar-width: none;
 }
 .modal-dialog .modal-content {

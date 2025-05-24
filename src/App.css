@@ -94,7 +94,7 @@
 }
 
 .modal-dialog {
-  max-width: 40% !important;
+  max-width: 40% ;
 }
 
 /* for file upload section */
@@ -206,4 +206,15 @@
 
 .question_answer__wrapper__chatbot .single__question__answer:last-child{
   margin-bottom: 200px;
+}
+
+@media (max-width: 768px) {
+  .modal-dialog {
+    max-width: 80% ;
+  }
+}
+@media (max-width: 576px) {
+  .modal-dialog {
+    max-width: 100% ;
+  }
 }
