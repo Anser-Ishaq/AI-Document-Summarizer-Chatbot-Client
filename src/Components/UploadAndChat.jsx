@@ -11,18 +11,23 @@ const UploadAndChat = () => {
     const { user } = useAuthStore();
     const { closeModal } = useModalStore();
     const navigate = useNavigate()
-    const {showSuccess, showError} = useAlert()
+    const { showSuccess, showError } = useAlert()
 
     // Form state - separate from the persisted data
     const [currentDocId, setCurrentDocId] = useState(null);
     const [title, setTitle] = useState("");
     const [loading, setLoading] = useState(false);
-    const [formStep, setFormStep] = useState("upload"); // "upload" or "title"
+    const [formStep, setFormStep] = useState("upload");
 
     const handleFileUpload = async (e) => {
         const file = e.target.files?.[0];
         if (!file || !user?.id) return;
 
+        const isPdf = file.type === "application/pdf";
+        if (user.status === "free" && !isPdf) {
+            showError("Free users can only upload PDF files.");
+            return;
+        }
         setLoading(true);
         try {
             const data = await uploadDocument(user.id, file);
@@ -34,6 +39,8 @@ const UploadAndChat = () => {
             setFormStep("title");
         } catch (err) {
             console.error("Upload failed", err);
+            console.log("error in file upload", err)
+            // showError(err.response.data.message)
             alert("Document upload failed");
         } finally {
             setLoading(false);
@@ -63,7 +70,7 @@ const UploadAndChat = () => {
 
             // Navigate to the new chat with a small delay to ensure state updates
             setTimeout(() => {
-                navigate(`/chat/${res.data.id}`);
+                // navigate(`/chat/${res.data.id}`);
                 // Optional: Force a reload 
                 window.location.href = `/chat/${res.data.id}`;
             }, 100);
@@ -94,7 +101,7 @@ const UploadAndChat = () => {
                 <>
                     <label>Enter Chat Title</label>
                     <input
-                    style={{border:"2px solid #3F3EED", backgroundColor:"rgb(233, 233, 255)", borderRadius:"8px"}}
+                        style={{ border: "2px solid #3F3EED", backgroundColor: "rgb(233, 233, 255)", borderRadius: "8px" }}
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}

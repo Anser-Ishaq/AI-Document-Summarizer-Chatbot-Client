@@ -15,7 +15,7 @@ import { deleteAccount } from '../api/authApi';
 function SettingTabs() {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 576);
     const { showError, showSuccess } = useAlert()
-    const { user } = useAuthStore()
+    const { user,logout } = useAuthStore()
     const { setChatId, resetChatData, chatMessagesData } = useChatStore()
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteResult, setDeleteResult] = useState(null);
@@ -68,8 +68,10 @@ function SettingTabs() {
     };
 
     const handleLogout = () => {
+        logout()
         console.log('Logout clicked');
         showSuccess("Logged out successfully");
+        navigate("/login")
 
         // Implement your logout logic here
     };
@@ -89,30 +91,34 @@ function SettingTabs() {
             showError('Failed to export chats');
         }
     };
-    const handleDeleteAccount = async () => {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("chatId");
-            localStorage.removeItem("documentId");
-            localStorage.removeItem("user");
-            console.log('Delete account clicked');
-            showSuccess("Account deleted successfully")
-            window.location.href = "/login";
-        // try {
-        //     await deleteAccount(user?.id);
-        // } 
-        // catch (error) {
-        //     console.error("Delete account error:", error);
-        //     await deleteAccount(user?.id);
-        //     localStorage.removeItem("authToken");
-        //     localStorage.removeItem("chatId");
-        //     localStorage.removeItem("documentId");
-        //     localStorage.removeItem("user");
-        //     console.log('Delete account clicked');
-        //     showSuccess("Account deleted successfully")
-        //     window.location.href = "/login";
-        //     showError("Account Deleted");
-        // }
-    };
+    // const handleDeleteAccount = async () => {
+    //         localStorage.removeItem("authToken");
+    //         localStorage.removeItem("chatId");
+    //         localStorage.removeItem("documentId");
+    //         localStorage.removeItem("user");
+    //         console.log('Delete account clicked');
+    //         showSuccess("Account deleted successfully")
+    //         window.location.href = "/login";
+    //     // try {
+    //     //     await deleteAccount(user?.id);
+    //     // } 
+    //     // catch (error) {
+    //     //     console.error("Delete account error:", error);
+    //     //     await deleteAccount(user?.id);
+    //     //     localStorage.removeItem("authToken");
+    //     //     localStorage.removeItem("chatId");
+    //     //     localStorage.removeItem("documentId");
+    //     //     localStorage.removeItem("user");
+    //     //     console.log('Delete account clicked');
+    //     //     showSuccess("Account deleted successfully")
+    //     //     window.location.href = "/login";
+    //     //     showError("Account Deleted");
+    //     // }
+    // };
+
+    const handleManageSubscription = ()=>{
+        navigate("/manage-subscription")
+    }
 
     return (
         <Container fluid className="p-0">
@@ -169,11 +175,17 @@ function SettingTabs() {
                                     buttonLabel="Export"
                                     onButtonClick={handleExportChats}
                                 />
-                                <ActionRow
+                                {/* <ActionRow
                                     label="Delete Account"
                                     buttonVariant="danger"
                                     buttonLabel="Delete"
                                     onButtonClick={handleDeleteAccount}
+                                /> */}
+                                <ActionRow
+                                    label="Manage Subscription"
+                                    buttonVariant="primary"
+                                    buttonLabel="Manage"
+                                    onButtonClick={handleManageSubscription}
                                 />
                             </Tab.Pane>
                         </Tab.Content>
