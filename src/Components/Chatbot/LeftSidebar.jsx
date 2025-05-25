@@ -72,7 +72,7 @@ const LeftSidebar = () => {
                     <div class="pro-upgrade">
                         <button onClick={handleSubs} class="rts-btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
                             <img src="/assets/images/icons/14.png" alt="icons" />
-                            Upgrade To Pro
+                            {user.status == "pro" ? "Pro User" : "Upgrade To Pro"}
                         </button>
                     </div>
                 </div>
