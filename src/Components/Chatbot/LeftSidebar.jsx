@@ -29,12 +29,6 @@ const LeftSidebar = () => {
                                 <img src="/assets/images/logo/logo-02.png" alt="logo" />
                             </div>
                         </button>
-                        {/* <Link to="/image/123" class="single-menu">
-                            <div class="icon">
-                                <img src="/assets/images/icons/05.png" alt="icons" />
-                            </div>
-                            <p>Image Chat Bot</p>
-                        </Link> */}
                     </div>
 
                     <div className="single-menu-wrapper">

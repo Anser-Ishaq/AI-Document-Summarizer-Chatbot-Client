@@ -119,7 +119,10 @@ function SettingTabs() {
     const handleManageSubscription = ()=>{
         navigate("/manage-subscription")
     }
-
+    const handleProfile = ()=>{
+        navigate("/profile")
+    }
+    
     return (
         <Container fluid className="p-0">
             <Tab.Container id="settings-tabs" defaultActiveKey="first">
@@ -169,11 +172,17 @@ function SettingTabs() {
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
                                 <h5 className="mb-4">Account Settings</h5>
-                                <ActionRow
+                                {/* <ActionRow
                                     label="Export Chats"
                                     buttonVariant="primary"
                                     buttonLabel="Export"
                                     onButtonClick={handleExportChats}
+                                /> */}
+                                <ActionRow
+                                    label="Profile"
+                                    buttonVariant="primary"
+                                    buttonLabel="Profile"
+                                    onButtonClick={handleProfile}
                                 />
                                 {/* <ActionRow
                                     label="Delete Account"

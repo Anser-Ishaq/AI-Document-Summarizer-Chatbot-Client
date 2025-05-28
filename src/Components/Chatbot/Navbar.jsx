@@ -34,9 +34,9 @@ const Navbar = () => {
               </div>
               <div className="left-logo-area">
 
-                <div className="left-side-open-clouse" id="collups-left">
+                {/* <div className="left-side-open-clouse" id="collups-left">
                   <img src="/assets/images/icons/01.svg" alt="icons" />
-                </div>
+                </div> */}
               </div>
               <div className="action-interactive-area__header">
 

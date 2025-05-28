@@ -124,9 +124,9 @@ const RightSidebar = () => {
                         )}
                     </div>
                 </div>
-                <div className="right-side-open-clouse" id="collups-right">
+                {/* <div className="right-side-open-clouse" id="collups-right">
                     <img src="/assets/images/icons/01.svg" alt="toggle icon" />
-                </div>
+                </div> */}
             </div>
         </>
     );
