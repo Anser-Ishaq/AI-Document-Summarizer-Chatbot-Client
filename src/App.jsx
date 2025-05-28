@@ -13,6 +13,12 @@ import LoadScripts from './Hooks/LoadScripts';
 import Subscription from './Components/Subscription/Subscription';
 import Profile from './Components/Profile/Profile';
 import Checkout from './Components/Subscription/Checkout';
+import Index from './Components/dashboard/Index';
+import Customers from './Components/dashboard/customers';
+import CouponsAndSubs from './Components/dashboard/CouponsAndSubs';
+import CouponsTable from './Components/dashboard/CouponsTable';
+import PlansTable from './Components/dashboard/PlansTable';
+import Layout from './Layouts/AdminLayout';
 
 
 function App() {
@@ -50,6 +56,13 @@ function App() {
           {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
           {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
         </Route>
+
+        {/* admin routes */}
+        <Route path="admin" element={<Index />} />
+        <Route path="admin/customers" element={<Customers />} />
+        <Route path="admin/coupons" element={<CouponsAndSubs />} />
+        <Route path="admin/all-coupons" element={<CouponsTable />} />
+        <Route path="admin/all-plans" element={<PlansTable />} />
       </Routes>
     </>
   )

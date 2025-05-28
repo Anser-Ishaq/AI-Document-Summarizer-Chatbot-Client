@@ -22,7 +22,11 @@ const Login = () => {
             const token = res?.data?.session?.access_token;
             useAuthStore.getState().login({ user, token });
             console.log("Login success:", res);
-            navigate("/")
+            if (user.role === "user") {
+                navigate("/")
+            } else {
+                navigate("/admin")
+            }
             // store token/session if needed
         } catch (err) {
             // alert(err.response?.data?.message || "Login failed");

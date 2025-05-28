@@ -120,6 +120,12 @@
   color: #888;
 }
 
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  color: #fff;
+  background-color: #7784ec;
+  border-color: #7784ec #7784ec #fff;
+}
+
 #dropped-content {
   width: calc(100% - 23px);
   height: 200px;

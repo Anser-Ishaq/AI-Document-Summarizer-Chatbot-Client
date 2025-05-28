@@ -19,7 +19,7 @@ const Navbar = () => {
         <div className="col-lg-12">
           <div className="header-inner-one">
             <div className="left-logo-area">
-              <a href="/" className="logo">
+              <a href={user.role === "user" ? '/' : '/admin'} className="logo">
                 <img src="/assets/images/logo/logo-01.png" alt="logo-image" />
               </a>
 

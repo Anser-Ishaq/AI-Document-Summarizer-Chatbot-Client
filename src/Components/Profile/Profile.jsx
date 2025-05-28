@@ -46,7 +46,7 @@ const Profile = () => {
             <Navbar />
             <div className="dash-board-main-wrapper">
                 <LeftSidebar />
-                <div className="main-center-content-m-left center-content search-sticky">
+                <div className="main-center-content-m-left center-content search-sticky" style={{maxWidth:"100%"}}>
                     <Form onSubmit={handleUserName}>
                         <Form.Group className="mb-3" controlId="formGridAddress1">
                             <Form.Label>Email</Form.Label>
@@ -70,7 +70,7 @@ const Profile = () => {
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="formGridCity">
                                 <Form.Label>Status</Form.Label>
-                                <Form.Control placeholder={user.status} disabled style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }} />
+                                <Form.Control placeholder={user.role === "admin" ? "ADMIN": user.status} disabled style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }} />
                             </Form.Group>
                         </Row>
 
