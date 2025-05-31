@@ -15,3 +15,24 @@ export const createSubscriptionAfterSetup = async ({ customerId, paymentMethodId
     });
     return response.data;
 };
+
+export const createPlan = async ({ name, description, price, interval, userId }) => {
+    try {
+        const response = await axiosInstance.post('/api/stripe/plans', {
+            name,
+            description,
+            price,
+            interval,
+            userId,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating plan:", error);
+        throw error;
+    }
+};
+
+export const createCoupon = async (data) => {
+    const response = await axiosInstance.post("/api/stripe/coupons", data);
+    return response.data;
+};
