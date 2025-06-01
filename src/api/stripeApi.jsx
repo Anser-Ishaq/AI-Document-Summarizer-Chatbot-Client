@@ -36,3 +36,13 @@ export const createCoupon = async (data) => {
     const response = await axiosInstance.post("/api/stripe/coupons", data);
     return response.data;
 };
+
+export const getStripePlans = async () => {
+    const response = await axiosInstance.get("/api/stripe/plans");
+    return response.data;
+};
+
+export const getAllCoupons = async ()=>{
+    const response = await axiosInstance.get("/api/stripe/coupons/all");
+    return response.data;
+}

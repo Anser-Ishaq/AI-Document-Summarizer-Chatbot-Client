@@ -1,48 +1,72 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Layout from '../../Layouts/AdminLayout'
 import Table from 'react-bootstrap/Table';
+import useCouponsStore from '../../Store/couponsStore';
 
 const CouponsTable = () => {
+    const { coupons, fetchAllCoupons, loadingCoupons, couponsError } = useCouponsStore();
+
+    useEffect(() => {
+        fetchAllCoupons()
+    }, [])
     return (
         <>
             <Layout>
-                <div class="container">
-                    <div class="cart-area-inner">
-                        <div class="ms-woocommerce-cart-form-wrapper">
-                            <Table striped bordered hover>
-                                <thead>
+                <div className="container my-4">
+                    <h3>Available Coupons</h3>
+                    {loadingCoupons && <p>Loading...</p>}
+                    {couponsError && <p className="text-danger">{couponsError}</p>}
+                    {!loadingCoupons && !couponsError && (
+                        <Table striped bordered hover responsive>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Coupon ID</th>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Is Active</th>
+                                    <th>Discount Value</th>
+                                    <th>Discount Type</th>
+                                    <th>Max Redemptions</th>
+                                    <th>Current Redemptions</th>
+                                    <th>Is Expired</th>
+                                    <th>Expires At</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {coupons.length === 0 ? (
                                     <tr>
-                                        <th>#</th>
-                                        <th>Coupon Id</th>
-                                        <th>Coupon Code</th>
-                                        <th>Used By users</th>
-                                        <th>Discount</th>
-                                        <th>Discounted Price</th>
-                                        <th>Expiry Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>123Abc1ds</td>
-                                        <td>123Abc1ds</td>
-                                        <td>abc@gmail.com</td>
-                                        <td>10%</td>
-                                        <td>$ 14.99</td>
-                                        <td>30-6-2025</td>
-                                        <td className='flex'>
-                                            <button className='btn btn-warning'>Update</button>
-                                            <button className='btn btn-secondary'>View</button>
-                                            <button className='btn btn-danger'>Delete</button>
+                                        <td colSpan="9" className="text-center">
+                                            No coupons found.
                                         </td>
                                     </tr>
-
-                                </tbody>
-                            </Table>
-
-                        </div>
-                    </div>
+                                ) : (
+                                    coupons.map((cpn, index) => (
+                                        <tr key={cpn.id}>
+                                            <td>{index + 1}</td>
+                                            <td>{cpn.id}</td>
+                                            <td>{cpn.name}</td>
+                                            <td>{cpn.code}</td>
+                                            <td>{cpn.isActive ? "True" : "False"}</td>
+                                            <td>{cpn.discountValue}</td>
+                                            <td>{cpn.discountType}</td>
+                                            <td>{cpn.maxRedemptions}</td>
+                                            <td>{cpn.currentRedemptions}</td>
+                                            <td>{cpn.isExpired ? "True" : "False"}</td>
+                                            <td>{new Date(cpn.expiresAt).toLocaleDateString()}</td>
+                                            <td>{new Date(cpn.createdAt).toLocaleDateString()}</td>
+                                            <td className="d-flex gap-2">
+                                                <button className="btn btn-warning btn-sm">Update</button>
+                                                <button className="btn btn-danger btn-sm">Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                    )}
                 </div>
             </Layout>
         </>

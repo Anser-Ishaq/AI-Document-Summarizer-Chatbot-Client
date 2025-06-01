@@ -18,6 +18,12 @@ export const getUserById = async (userId) => {
     return response.data;
 };
 
+export const getAllUsers = async () => {
+    const response = await axiosInstance.get('/api/auth/users');
+    console.log("response", response.data)
+    return response.data;
+};
+
 export const changeUserNameByUserId = async (userId, newUserName) => {
     const response = await axiosInstance.put(`/api/auth/user/${userId}/username`, {
         newUserName

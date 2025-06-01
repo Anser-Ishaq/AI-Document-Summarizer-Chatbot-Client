@@ -74,7 +74,7 @@ const LeftSidebar = () => {
                                 <div className="icon">
                                     <img src="/assets/images/icons/19.png" alt="users" />
                                 </div>
-                                <p>Subscriptions</p>
+                                <p>Subscription Plans</p>
                             </Link>
                             <Link to="/admin/coupons" className="single-menu">
                                 <div className="icon">

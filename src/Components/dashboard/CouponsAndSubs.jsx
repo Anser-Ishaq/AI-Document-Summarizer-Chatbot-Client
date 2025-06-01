@@ -20,9 +20,9 @@ const CouponsAndSubs = () => {
                     <Tab eventKey="subscription" title="Manage Subscription">
                         <AdminSubscription />
                     </Tab>
-                    <Tab eventKey="sale" title="Sale">
+                    {/* <Tab eventKey="sale" title="Sale">
                         <SaleSubscription/>
-                    </Tab>
+                    </Tab> */}
                 </Tabs>
 
             </Layout>
