@@ -1,20 +1,24 @@
 import axiosInstance from "./axios";
 
-export const createSubscription = async ({ userId, email }) => {
+export const createSubscription = async ({ userId, email, planId, couponCode }) => {
     const response = await axiosInstance.post('/api/stripe/create-subscription', {
         userId,
         email,
+        planId,
+        couponCode,
     });
     return response.data;
 };
 
-export const createSubscriptionAfterSetup = async ({ customerId, paymentMethodId }) => {
+export const createSubscriptionAfterSetup = async ({ customerId, paymentMethodId, couponCode }) => {
     const response = await axiosInstance.post('/api/stripe/create-subscription-after-setup', {
         customerId,
         paymentMethodId,
+        couponCode,
     });
     return response.data;
 };
+
 
 export const createPlan = async ({ name, description, price, interval, userId }) => {
     try {
@@ -42,7 +46,17 @@ export const getStripePlans = async () => {
     return response.data;
 };
 
-export const getAllCoupons = async ()=>{
+export const getAllCoupons = async () => {
     const response = await axiosInstance.get("/api/stripe/coupons/all");
+    return response.data;
+}
+
+export const getAllSubscriptions = async () => {
+    const response = await axiosInstance.get("/api/stripe/subscriptions/all");
+    return response.data;
+}
+
+export const validateCoupons = async (couponCode) => {
+    const response = await axiosInstance.get(`/api/stripe/coupons/validate/${couponCode.toUpperCase()}`);
     return response.data;
 }

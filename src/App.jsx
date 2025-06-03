@@ -14,11 +14,12 @@ import Subscription from './Components/Subscription/Subscription';
 import Profile from './Components/Profile/Profile';
 import Checkout from './Components/Subscription/Checkout';
 import Index from './Components/dashboard/Index';
-import Customers from './Components/dashboard/customers';
 import CouponsAndSubs from './Components/dashboard/CouponsAndSubs';
 import CouponsTable from './Components/dashboard/CouponsTable';
 import PlansTable from './Components/dashboard/PlansTable';
 import Layout from './Layouts/AdminLayout';
+import SubscriptionTable from './Components/dashboard/SubscriptionTable';
+import Customers from './Components/dashboard/Customers';
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
         <Route path="admin/coupons" element={<CouponsAndSubs />} />
         <Route path="admin/all-coupons" element={<CouponsTable />} />
         <Route path="admin/all-plans" element={<PlansTable />} />
+        <Route path="admin/all-subscriptions" element={<SubscriptionTable />} />
       </Routes>
     </>
   )

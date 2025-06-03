@@ -1,73 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../Layouts/AdminLayout';
 import Table from 'react-bootstrap/Table';
-import { getAllUsers } from '../../api/authApi';
-import CustomerDetails from './CustomerDetails';
 import useModalStore from '../../Store/modalStore';
 import Dynamic_Modal from '../Modal';
+import { getAllSubscriptions } from '../../api/stripeApi';
+import SubscriptionDetails from './SubscriptionDetails';
 
 
-const Customers = () => {
-    const [users, setUsers] = useState([]);
+const SubscriptionTable = () => {
+    const [subs, setSubs] = useState([]);
     const { openModal } = useModalStore();
 
+    function formatCentsToDollars(amountInCents) {
+        // Convert cents to dollars and format with 2 decimal places
+        return (amountInCents / 100).toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        });
+      }
+
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchSubscriptions = async () => {
             try {
-                const response = await getAllUsers();
+                const response = await getAllSubscriptions();
+                console.log("response of subs", response)
                 if (response.success) {
-                    setUsers(response.data);
+                    setSubs(response.data);
                 } else {
-                    console.error('Failed to fetch users:', response.message);
+                    console.error('Failed to fetch subscriptions:', response.message);
                 }
             } catch (error) {
                 console.error('API error:', error);
             }
         };
 
-        fetchUsers();
+        fetchSubscriptions();
     }, []);
 
     return (
         <Layout>
             <div className="container">
-                <h3>All Users</h3>
+                <h3>All Subscriptions</h3>
                 <div className="cart-area-inner">
                     <div className="ms-woocommerce-cart-form-wrapper">
                         <Table striped bordered hover responsive>
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
+                                    <th>User Id</th>
                                     <th>Status</th>
-                                    <th>Plan</th>
-                                    <th>Paid</th>
-                                    <th>Created At</th>
+                                    <th>Customer Id</th>
+                                    <th>Amount Paid</th>
+                                    <th>Coupon Code</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.length > 0 ? (
-                                    users.map((user, index) => (
-                                        <tr key={user.user_id}>
+                                {subs.length > 0 ? (
+                                    subs.map((subs, index) => (
+                                        <tr key={subs.userId}>
                                             <td>{index + 1}</td>
-                                            <td>{user.username}</td>
-                                            <td>{user.email}</td>
-                                            <td>{user.role}</td>
-                                            <td>{user.status}</td>
-                                            <td>{user.status}</td>
-                                            <td>{user.status === 'pro' ? '$20' : '$0'}</td>
-                                            <td>{new Date(user.created_at).toLocaleDateString()}</td>
-                                            <td style={{ pointerEvents: `${user.role === 'admin' ? "none" : ""}` }} className="d-flex gap-2">
+                                            <td>{subs.userId}</td>
+                                            <td>{subs.status}</td>
+                                            <td>{subs.customerId}</td>
+                                            <td>{formatCentsToDollars(subs.amountPaid)}</td>
+                                            <td>{subs.couponUsed}</td>
+                                            <td className="d-flex gap-2">
                                                 <button
                                                     className="btn btn-secondary btn-sm"
-                                                    onClick={() => openModal(<CustomerDetails user={user} />)}>
+                                                    onClick={() => openModal(<SubscriptionDetails subs={subs} formatCentsToDollars={formatCentsToDollars} />)}>
                                                     View
                                                 </button>
                                                 <button className="btn btn-danger btn-sm">Delete</button>
-                                                <Dynamic_Modal />
 
                                             </td>
                                         </tr>
@@ -75,7 +79,7 @@ const Customers = () => {
                                 ) : (
                                     <tr>
                                         <td colSpan="9" className="text-center">
-                                            No users found.
+                                            No Subscriptions found.
                                         </td>
                                     </tr>
                                 )}
@@ -84,8 +88,9 @@ const Customers = () => {
                     </div>
                 </div>
             </div>
+            <Dynamic_Modal />
         </Layout>
     );
 };
 
-export default Customers;
+export default SubscriptionTable;

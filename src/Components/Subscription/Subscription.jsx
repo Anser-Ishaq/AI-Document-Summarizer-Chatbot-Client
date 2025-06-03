@@ -1,14 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import LeftSidebar from '../Chatbot/LeftSidebar'
 import Navbar from '../Chatbot/Navbar'
 import useModalStore from '../../Store/modalStore'
 import Checkout from './Checkout'
 import useAuthStore from '../../Store/authStore'
+import useStripeStore from '../../Store/stripeStore'
 
 
 const Subscription = () => {
     const { openModal } = useModalStore()
     const { user } = useAuthStore()
+    const { plans, fetchPlans } = useStripeStore()
+
+    useEffect(() => {
+        fetchPlans();
+    }, []);
+
+    // Dynamically decide column size
+    const colClass = plans.length === 2 ? 'col-lg-6' : 'col-lg-4';
     return (
         <>
             <Navbar />
@@ -28,117 +37,38 @@ const Subscription = () => {
                                 </div>
                             </div>
 
-                            {/* <!-- tabs area start --> */}
                             <div className="tab-area-pricing-two mt--30">
                                 <div className="tab-content mt--20" id="myTabContent">
                                     <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div className="row g-5 mt--10">
-                                            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                {/* <!-- single pricing-area --> */}
-                                                <div className="single-pricing-single-two">
-                                                    <div className="head">
-                                                        <span className="top">Basic</span>
-                                                        <div className="date-use">
-                                                            <h4 className="title">$0</h4>
-                                                            <span>/month</span>
+                                            {plans.map((plan) => (
+                                                <div className={`${colClass} col-md-6 col-sm-12 col-12`} key={plan.id}>
+                                                    <div className={`single-pricing-single-two ${user?.status === plan.name.toLowerCase() ? 'active' : ''}`}>
+                                                        <div className="head">
+                                                            <span className="top">{plan.name}</span>
+                                                            <div className="date-use">
+                                                                <h4 className="title">${plan.price}</h4>
+                                                                <span>/{plan.interval}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="body">
-                                                        <p className="para">Get started with our AI chatbot for free</p>
-
-                                                        <div className="check-wrapper">
-                                                            {/* <!-- single check --> */}
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Chat with PDF only</p>
-                                                            </div>
-                                                            {/* <!-- single check end-->
-                                                            <!-- single check --> */}
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Can Upload a pdf upto 600kb</p>
-                                                            </div>
-                                                            {/* <!-- single check end-->
-                                                            <!-- single check --> */}
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>All types of content</p>
-                                                            </div>
-                                                            {/* <!-- single check end-->
-                                                            <!-- single check --> */}
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Available in 10+ languages</p>
-                                                            </div>
-                                                            {/* <!-- single check end--> */}
+                                                        <div className="body">
+                                                            <p style={{ whiteSpace: "pre-line" }} className="para">{plan.description}</p>
+                                                            <a
+                                                                onClick={() => {
+                                                                        openModal(<Checkout planPrice={plan.price} planName={plan.name} planId={plan.id} planInterval={plan.interval} />);
+                                                                }}
+                                                                className={`pricing-btn ${user?.status === plan.name.toLowerCase() ? 'cursor-not-allowed opacity-50' : ''}`}
+                                                            >
+                                                                {user?.status === plan.name.toLowerCase() ? 'Current' : plan.name === 'Free' ? 'Free For All' : 'Get Started'}
+                                                            </a>
                                                         </div>
-                                                        <a href="" className="pricing-btn">Free For All</a>
-
                                                     </div>
                                                 </div>
-                                                {/* <!-- single pricing-area end --> */}
-                                            </div>
-                                            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-                                                <div className="single-pricing-single-two active">
-                                                    <div className="head">
-                                                        <span className="top">Pro</span>
-                                                        <div className="date-use">
-                                                            <h4 className="title">$19.99</h4>
-                                                            <span>/month</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="body">
-                                                        <p className="para">A premium pricing plan is a pricing <br /> structure that is designed.</p>
-
-                                                        <div className="check-wrapper">
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Inclues all perks of free plan</p>
-                                                            </div>
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Chat with txt file</p>
-                                                            </div>
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Chat with Docx file</p>
-                                                            </div>
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Chat with PNG images</p>
-                                                            </div>
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>Chat with JPG / JPEG images</p>
-                                                            </div>
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>All types of content</p>
-                                                            </div>
-                                                            <div className="check-area">
-                                                                <i className="fa-solid fa-check"></i>
-                                                                <p>OpenAI latest models</p>
-                                                            </div>
-                                                        </div>
-                                                        {/* <a onClick={() => openModal(<Checkout />)} className="pricing-btn">Get Started</a> */}
-                                                        <a
-                                                            onClick={() => {
-                                                                if (user?.status === "free") {
-                                                                    openModal(<Checkout />);
-                                                                }
-                                                            }}
-                                                            className={`pricing-btn ${user?.status !== "free" ? "cursor-not-allowed opacity-50" : ""}`}
-                                                        >
-                                                            {user?.status === "free" ? "Get Started" : "Current"}
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {/* <!-- tabs area end --> */}
                         </div>
                     </div>
                 </div>
