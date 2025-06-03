@@ -37,6 +37,16 @@ export const createPlan = async ({ name, description, price, interval, userId, f
     }
 };
 
+export const updatePlan = async (planId, updates) => {
+    const response = await axiosInstance.put(`/api/stripe/plans/${planId}`, updates);
+    return response.data;
+};
+
+export const deletePlan = async (planId) => {
+    const response = await axiosInstance.delete(`/api/stripe/plans/${planId}`);
+    return response.data;
+}
+
 export const createCoupon = async (data) => {
     const response = await axiosInstance.post("/api/stripe/coupons", data);
     return response.data;
@@ -64,10 +74,10 @@ export const validateCoupons = async (couponCode) => {
 
 export const getActiveSubscription = async (userId) => {
     try {
-      const response = await axiosInstance.get(`/api/stripe/subscriptions/active?user_id=${userId}`);
-      return response.data;
+        const response = await axiosInstance.get(`/api/stripe/subscriptions/active?user_id=${userId}`);
+        return response.data;
     } catch (error) {
-      console.error("Error fetching subscription:", error);
-      return null;
+        console.error("Error fetching subscription:", error);
+        return null;
     }
-  };
+};

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../Layouts/AdminLayout';
 import Table from 'react-bootstrap/Table';
-import { getAllUsers } from '../../api/authApi';
+import { deleteAccount, getAllUsers } from '../../api/authApi';
 import CustomerDetails from './CustomerDetails';
 import useModalStore from '../../Store/modalStore';
 import Dynamic_Modal from '../Modal';
@@ -10,6 +10,21 @@ import Dynamic_Modal from '../Modal';
 const Customers = () => {
     const [users, setUsers] = useState([]);
     const { openModal } = useModalStore();
+    // Inside your component
+    const handleDeleteUser = async (userId) => {
+        try {
+            if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                await deleteAccount(userId);
+                // Refresh the user list or remove the deleted user from state
+                // Example if you're using state:
+                setUsers(users.filter(user => user.user_id !== userId));
+                alert('User deleted successfully');
+            }
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+            alert('Failed to delete user: ' + (error.response?.data?.message || error.message));
+        }
+    };
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -60,13 +75,16 @@ const Customers = () => {
                                             <td>{user.status}</td>
                                             <td>{user.status === 'pro' ? '$20' : '$0'}</td>
                                             <td>{new Date(user.created_at).toLocaleDateString()}</td>
-                                            <td style={{ pointerEvents: `${user.role === 'admin' ? "none" : ""}` }} className="d-flex gap-2">
+                                            <td className="d-flex gap-2">
                                                 <button
                                                     className="btn btn-secondary btn-sm"
                                                     onClick={() => openModal(<CustomerDetails user={user} />)}>
                                                     View
                                                 </button>
-                                                <button className="btn btn-danger btn-sm">Delete</button>
+                                                <button
+                                                onClick={()=> handleDeleteUser(user.user_id)}
+                                                disabled={user.role === 'admin'}
+                                                className="btn btn-danger btn-sm">Delete</button>
                                                 <Dynamic_Modal />
 
                                             </td>

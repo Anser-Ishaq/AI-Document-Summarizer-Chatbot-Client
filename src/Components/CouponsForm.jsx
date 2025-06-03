@@ -121,7 +121,7 @@ const CouponsForm = () => {
                             style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }}
                         >
                             <option value="percentage">Percentage</option>
-                            <option value="fixed">Fixed Amount</option>
+                            {/* <option value="fixed">Fixed Amount</option> */}
                         </Form.Select>
                     </Form.Group>
 
