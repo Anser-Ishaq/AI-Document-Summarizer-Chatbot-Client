@@ -6,9 +6,10 @@ import useChatStore from "../Store/chatStore";
 import FileUpload from "./Chatbot/FileUpload";
 import { useNavigate } from "react-router-dom";
 import useAlert from "../Hooks/useAlerts";
+import { isFileAllowed, getReadableFileTypes } from "../Utils/fileTypes";
 const UploadAndChat = () => {
     const { setDocId, setChatId } = useChatStore();
-    const { user } = useAuthStore();
+    const { user, allowedFileTypes } = useAuthStore();
     const { closeModal } = useModalStore();
     const navigate = useNavigate()
     const { showSuccess, showError } = useAlert()
@@ -23,9 +24,18 @@ const UploadAndChat = () => {
         const file = e.target.files?.[0];
         if (!file || !user?.id) return;
 
-        const isPdf = file.type === "application/pdf";
-        if (user.status === "free" && !isPdf) {
-            showError("Free users can only upload PDF files.");
+        // Get allowed file types from auth store or localStorage
+        const AllowedFileTypes = allowedFileTypes ||
+            JSON.parse(localStorage.getItem('allowedFileTypes')) ||
+            ['pdf'];
+
+        // Check if file is allowed
+        if (!isFileAllowed(file, AllowedFileTypes)) {
+            const readableTypes = getReadableFileTypes(AllowedFileTypes);
+            showError(
+                'Unsupported File Type',
+                `Your plan supports: ${readableTypes.join(', ')}`
+            );
             return;
         }
         setLoading(true);

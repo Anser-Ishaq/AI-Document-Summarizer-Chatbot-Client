@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import useAuthStore from '../Store/authStore';
 import { createPlan } from '../api/stripeApi';
 import useAlert from '../Hooks/useAlerts';
@@ -10,13 +8,23 @@ import useAlert from '../Hooks/useAlerts';
 const AdminSubscription = () => {
     const { user } = useAuthStore();
     const { showError, showSuccess } = useAlert();
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+
+    // Available features with labels
+    const availableFeatures = [
+        { value: 'pdf', label: 'PDF Support' },
+        { value: 'txt', label: 'Text File Support' },
+        { value: 'docx', label: 'Word Document Support' },
+        { value: 'png', label: 'PNG Image Support' },
+        { value: 'jpg', label: 'JPG Image Support' }
+    ];
 
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         price: '',
         interval: 'month',
+        features: [] // Array to store selected features
     });
 
     const handleChange = (e) => {
@@ -27,13 +35,32 @@ const AdminSubscription = () => {
         }));
     };
 
+    const handleFeatureChange = (e) => {
+        const { value, checked } = e.target;
+        setFormData(prev => {
+            if (checked) {
+                return {
+                    ...prev,
+                    features: [...prev.features, value]
+                };
+            } else {
+                return {
+                    ...prev,
+                    features: prev.features.filter(f => f !== value)
+                };
+            }
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!user?.id) {
-            alert("User not authenticated");
+            showError("User not authenticated");
             return;
         }
-        setLoading(true)
+
+        setLoading(true);
+
         const formattedDescription = formData.description
             .split('\n')
             .map((line) => {
@@ -51,16 +78,22 @@ const AdminSubscription = () => {
                 price: parseFloat(formData.price),
                 interval: formData.interval,
                 userId: user.id,
+                features: formData.features // Include selected features
             };
 
             const result = await createPlan(payload);
             console.log("Plan created:", result);
-            //   alert("Plan created successfully!");
-            showSuccess("Plan created successfully!")
-            setFormData({ name: '', description: '', price: '', interval: 'month' });
+            showSuccess("Plan created successfully!");
+            setFormData({
+                name: '',
+                description: '',
+                price: '',
+                interval: 'month',
+                features: []
+            });
         } catch (error) {
             console.error("Failed to create plan:", error.response?.data || error.message);
-            showError("Failed to create plan.")
+            showError(error.response?.data?.message || "Failed to create plan.");
         } finally {
             setLoading(false);
         }
@@ -76,6 +109,7 @@ const AdminSubscription = () => {
                     value={formData.name}
                     onChange={handleChange}
                     style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }}
+                    required
                 />
             </Form.Group>
 
@@ -85,6 +119,7 @@ const AdminSubscription = () => {
                     value={formData.interval}
                     onChange={handleChange}
                     style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }}
+                    required
                 >
                     <option value="day">Daily</option>
                     <option value="week">Weekly</option>
@@ -101,6 +136,9 @@ const AdminSubscription = () => {
                     value={formData.price}
                     onChange={handleChange}
                     style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }}
+                    min="0.01"
+                    step="0.01"
+                    required
                 />
             </Form.Group>
 
@@ -109,14 +147,40 @@ const AdminSubscription = () => {
                 <Form.Control
                     as="textarea"
                     rows={5}
-                    placeholder="Enter plan features or description..."
+                    placeholder="Enter plan features or description (one per line)..."
                     value={formData.description}
                     onChange={handleChange}
                     style={{ border: "1px solid #3F3EED", background: "#F7F7FF" }}
+                    required
                 />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Form.Group className="mb-3">
+                <Form.Label>Supported File Types</Form.Label>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                    gap: '10px',
+                    padding: '10px',
+                    border: '1px solid #3F3EED',
+                    borderRadius: '5px',
+                    background: '#F7F7FF'
+                }}>
+                    {availableFeatures.map((feature) => (
+                        <Form.Check
+                            key={feature.value}
+                            type="checkbox"
+                            id={`feature-${feature.value}`}
+                            label={feature.label}
+                            value={feature.value}
+                            checked={formData.features.includes(feature.value)}
+                            onChange={handleFeatureChange}
+                        />
+                    ))}
+                </div>
+            </Form.Group>
+
+            <Button variant="primary" type="submit" disabled={loading}>
                 {loading ? "Creating New Plan..." : "Save New Plan"}
             </Button>
         </Form>

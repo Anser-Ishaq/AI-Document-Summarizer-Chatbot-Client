@@ -20,7 +20,7 @@ export const createSubscriptionAfterSetup = async ({ customerId, paymentMethodId
 };
 
 
-export const createPlan = async ({ name, description, price, interval, userId }) => {
+export const createPlan = async ({ name, description, price, interval, userId, features = [] }) => {
     try {
         const response = await axiosInstance.post('/api/stripe/plans', {
             name,
@@ -28,6 +28,7 @@ export const createPlan = async ({ name, description, price, interval, userId })
             price,
             interval,
             userId,
+            features
         });
         return response.data;
     } catch (error) {
@@ -60,3 +61,13 @@ export const validateCoupons = async (couponCode) => {
     const response = await axiosInstance.get(`/api/stripe/coupons/validate/${couponCode.toUpperCase()}`);
     return response.data;
 }
+
+export const getActiveSubscription = async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/api/stripe/subscriptions/active?user_id=${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      return null;
+    }
+  };
