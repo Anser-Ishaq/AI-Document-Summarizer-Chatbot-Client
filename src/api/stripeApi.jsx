@@ -58,9 +58,22 @@ export const getStripePlans = async () => {
 };
 
 export const getAllCoupons = async () => {
+    // const response = await axiosInstance.get("/api/stripe/coupons/all");
     const response = await axiosInstance.get("/api/stripe/coupons/all");
     return response.data;
 }
+
+export const deleteCoupons = async (couponId, userId) => {
+    const response = await axiosInstance.delete(`/api/stripe/coupons/${couponId}`, {
+        data: { userId }
+    });
+    return response.data
+}
+
+export const updateCoupon = async (couponId, updateData) => {
+    const response = await axiosInstance.patch(`/api/stripe/coupons/${couponId}`, updateData);
+    return response.data;
+};
 
 export const getAllSubscriptions = async () => {
     const response = await axiosInstance.get("/api/stripe/subscriptions/all");
@@ -81,3 +94,14 @@ export const getActiveSubscription = async (userId) => {
         return null;
     }
 };
+
+
+export const getDashboardStats = async () => {
+    const response = await axiosInstance.get("/api/stripe/admin/dashboard");
+    return response.data;
+}
+
+export const cancelSubscription = async (userId) => {
+    const response = await axiosInstance.post("/api/stripe/cancel-subscription", { userId });
+    return response.data;
+}

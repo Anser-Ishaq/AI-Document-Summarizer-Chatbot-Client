@@ -1,9 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Layout from '../../Layouts/AdminLayout'
 import { Link } from 'react-router-dom'
+import { getDashboardStats } from '../../api/stripeApi'
 
 const Index = () => {
-    console.log("index of admin loaded")
+    const [data, setData] = useState(null)
+    function formatCentsToDollars(amountInCents) {
+        // Convert cents to dollars and format with 2 decimal places
+        return (amountInCents / 100).toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        });
+      }
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await getDashboardStats()
+                console.log("response from dash", response)
+                setData(response.data)
+            } catch (error) {
+                console.error("Failed to load dashboard stats", error)
+            }
+        }
+
+        fetchStats()
+    }, []) // Only run on mount
+
+
+
     return (
         <>
             <Layout>
@@ -24,7 +49,7 @@ const Index = () => {
                                         <h5 className="title">Customers</h5>
                                     </a>
                                     <p className="disc">
-                                        <strong>Total Customers : </strong> 20
+                                        <strong>Total Customers : </strong> {data?.totalUsers ?? 'Loading...'}
                                     </p>
                                     <Link to="/admin/customers">More Details <i className="fa-solid fa-arrow-right"></i></Link>
                                 </div>
@@ -40,12 +65,12 @@ const Index = () => {
 
                                     </div>
                                     <a href="#">
-                                        <h5 className="title">Coupons Used</h5>
+                                        <h5 className="title">Total Plans</h5>
                                     </a>
                                     <p className="disc">
-                                        <strong>Total Coupons Used : </strong> 20
+                                        <strong>Total Plans : </strong> {data?.totalPlans ?? 'Loading...'}
                                     </p>
-                                    <Link to="/admin/all-coupons">More Details<i className="fa-solid fa-arrow-right"></i></Link>
+                                    <Link to="/admin/all-plans">More Details<i className="fa-solid fa-arrow-right"></i></Link>
                                 </div>
                             </div>
                             <div className="col-lg-4 col-md-6 col-sm-12 col-12">
@@ -62,9 +87,9 @@ const Index = () => {
                                         <h5 className="title">Revenue</h5>
                                     </a>
                                     <p className="disc">
-                                        <strong>Total Revenue : </strong> $2000
+                                        <strong>Total Revenue : </strong> {formatCentsToDollars(data?.totalRevenue) ?? 'Loading...'}
                                     </p>
-                                    <Link to="/admin/all-plans">More Details <i className="fa-solid fa-arrow-right"></i></Link>
+                                    <Link to="/admin/all-subscriptions">More Details <i className="fa-solid fa-arrow-right"></i></Link>
                                 </div>
                             </div>
                         </div>

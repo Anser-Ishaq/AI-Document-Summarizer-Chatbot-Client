@@ -17,14 +17,16 @@ const Login = () => {
         e.preventDefault();
         try {
             const res = await loginUser({ email: formData.email, password: formData.password });
-            showSuccess(res?.message)
             const user = res?.data?.user;
             const token = res?.data?.session?.access_token;
-            useAuthStore.getState().login({ user, token });
+            await useAuthStore.getState().login({ user, token });
+            showSuccess(res?.message)
             console.log("Login success:", res);
             if (user.role === "user") {
+                // window.location.reload();
                 navigate("/")
             } else {
+                // window.location.reload();
                 navigate("/admin")
             }
             // store token/session if needed

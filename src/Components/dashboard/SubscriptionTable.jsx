@@ -71,7 +71,7 @@ const SubscriptionTable = () => {
                                                     onClick={() => openModal(<SubscriptionDetails subs={subs} formatCentsToDollars={formatCentsToDollars} />)}>
                                                     View
                                                 </button>
-                                                <button className="btn btn-danger btn-sm">Delete</button>
+                                                {/* <button className="btn btn-danger btn-sm">Delete</button> */}
 
                                             </td>
                                         </tr>

@@ -19,19 +19,19 @@ const Navbar = () => {
         <div className="col-lg-12">
           <div className="header-inner-one">
             <div className="left-logo-area">
-              <a href={user.role === "user" ? '/' : '/admin'} className="logo">
+              <a href={user?.role === "user" ? '/' : '/admin'} className="logo">
                 <img src="/assets/images/logo/logo-01.png" alt="logo-image" />
               </a>
 
             </div>
             <div className="header-right">
-              <div class="button-area">
+              {/* <div class="button-area">
                 <Link to="/manage-subscription" class="rts-btn btn-primary"  >
                   <img src="/assets/images/icons/02.svg" alt="icons" />
-                  {user.status == "pro" ? "Pro User" : "Update"}
+                  {user?.status == "pro" ? "Pro User" : "Update"}
 
                 </Link>
-              </div>
+              </div> */}
               <div className="left-logo-area">
 
                 {/* <div className="left-side-open-clouse" id="collups-left">

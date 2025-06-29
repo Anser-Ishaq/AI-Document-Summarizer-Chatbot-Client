@@ -20,6 +20,7 @@ import PlansTable from './Components/dashboard/PlansTable';
 import Layout from './Layouts/AdminLayout';
 import SubscriptionTable from './Components/dashboard/SubscriptionTable';
 import Customers from './Components/dashboard/Customers';
+import Loader from './Components/Loader';
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
     initializeAuth();
   }, []);
 
-  if (!isInitialized) return null;
+  if (!isInitialized) return <Loader/>;
   return (
     <>
       <Routes>

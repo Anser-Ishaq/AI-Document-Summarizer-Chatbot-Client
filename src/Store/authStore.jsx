@@ -73,6 +73,18 @@ const useAuthStore = create((set) => ({
     });
   },
 
+  updateUserSubscription: (subscriptionData) => {
+    const allowedFileTypes = subscriptionData?.plan?.features || ['pdf'];
+    
+    localStorage.setItem("subscription", JSON.stringify(subscriptionData));
+    localStorage.setItem("allowedFileTypes", JSON.stringify(allowedFileTypes));
+    
+    set({ 
+      subscription: subscriptionData,
+      allowedFileTypes 
+    });
+  },
+
   refreshSubscription: async (userId) => {
     try {
       const subscription = await getActiveSubscription(userId);

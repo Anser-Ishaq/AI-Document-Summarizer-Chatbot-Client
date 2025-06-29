@@ -12,15 +12,18 @@ import { useNavigate } from 'react-router-dom';
 import useChatStore from '../Store/chatStore';
 import { exportChatsToPDF } from '../Utils/ExportChats';
 import { deleteAccount } from '../api/authApi';
+import { cancelSubscription } from '../api/stripeApi';
+
 function SettingTabs() {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 576);
     const { showError, showSuccess } = useAlert()
-    const { user,logout } = useAuthStore()
+    const { user, logout, subscription, updateUserSubscription, refreshSubscription } = useAuthStore();
     const { setChatId, resetChatData, chatMessagesData } = useChatStore()
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteResult, setDeleteResult] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const [isCancelling, setIsCancelling] = useState(false);
 
     console.log("chatMessagesData from settings", chatMessagesData)
 
@@ -72,57 +75,44 @@ function SettingTabs() {
         console.log('Logout clicked');
         showSuccess("Logged out successfully");
         navigate("/login")
-
-        // Implement your logout logic here
     };
 
-    const handleExportChats = async () => {
-        try {
-            if (!chatMessagesData || !chatMessagesData.messages || chatMessagesData.messages.length === 0) {
-                showError('No chat data available to export.');
-                return;
-            }
-
-            // Wrap in array because exportChatsToPDF expects an array of chat objects
-            await exportChatsToPDF([chatMessagesData], user.id);
-            showSuccess('Chats exported successfully');
-        } catch (error) {
-            console.error('Error exporting chats:', error);
-            showError('Failed to export chats');
-        }
-    };
-    // const handleDeleteAccount = async () => {
-    //         localStorage.removeItem("authToken");
-    //         localStorage.removeItem("chatId");
-    //         localStorage.removeItem("documentId");
-    //         localStorage.removeItem("user");
-    //         console.log('Delete account clicked');
-    //         showSuccess("Account deleted successfully")
-    //         window.location.href = "/login";
-    //     // try {
-    //     //     await deleteAccount(user?.id);
-    //     // } 
-    //     // catch (error) {
-    //     //     console.error("Delete account error:", error);
-    //     //     await deleteAccount(user?.id);
-    //     //     localStorage.removeItem("authToken");
-    //     //     localStorage.removeItem("chatId");
-    //     //     localStorage.removeItem("documentId");
-    //     //     localStorage.removeItem("user");
-    //     //     console.log('Delete account clicked');
-    //     //     showSuccess("Account deleted successfully")
-    //     //     window.location.href = "/login";
-    //     //     showError("Account Deleted");
-    //     // }
-    // };
-
-    const handleManageSubscription = ()=>{
+    const handleManageSubscription = () => {
         navigate("/manage-subscription")
     }
-    const handleProfile = ()=>{
+    const handleProfile = () => {
         navigate("/profile")
     }
-    
+    const handleCancelSubscription = async () => {
+        const confirmCancel = window.confirm(
+            'Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.'
+        );
+
+        if (!confirmCancel) return;
+
+        try {
+            setIsCancelling(true);
+            setError(null);
+
+            // Call the API function to cancel subscription
+            await cancelSubscription(user.id);
+
+            // Refresh the subscription data
+            const updatedSubscription = await refreshSubscription(user.id);
+            const updatedUser = { ...user, status: 'free' };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+
+            showSuccess("Subscription canceled successfully. You have access until the end of your billing period.");
+
+        } catch (err) {
+            console.error('Failed to cancel subscription:', err);
+            setError(err.response?.data?.error || 'Failed to cancel subscription');
+            showError(err.response?.data?.error || 'Failed to cancel subscription');
+        } finally {
+            setIsCancelling(false);
+        }
+    };
+
     return (
         <Container fluid className="p-0">
             <Tab.Container id="settings-tabs" defaultActiveKey="first">
@@ -172,29 +162,36 @@ function SettingTabs() {
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
                                 <h5 className="mb-4">Account Settings</h5>
-                                {/* <ActionRow
-                                    label="Export Chats"
-                                    buttonVariant="primary"
-                                    buttonLabel="Export"
-                                    onButtonClick={handleExportChats}
-                                /> */}
+
                                 <ActionRow
                                     label="Profile"
                                     buttonVariant="primary"
                                     buttonLabel="Profile"
                                     onButtonClick={handleProfile}
                                 />
-                                {/* <ActionRow
-                                    label="Delete Account"
-                                    buttonVariant="danger"
-                                    buttonLabel="Delete"
-                                    onButtonClick={handleDeleteAccount}
-                                /> */}
+
                                 <ActionRow
                                     label="Manage Subscription"
                                     buttonVariant="primary"
                                     buttonLabel="Manage"
                                     onButtonClick={handleManageSubscription}
+                                />
+                                <ActionRow
+                                    label="Current Plan"
+                                    buttonVariant="success"
+                                    buttonLabel={subscription?.plan?.name || "Free"}
+                                />
+                                <ActionRow
+                                    label="Plan Status"
+                                    buttonVariant="secondary"
+                                    buttonLabel={subscription?.status || "Free"}
+                                />
+                                <ActionRow
+                                    label="Cancel Subscription"
+                                    buttonVariant="danger"
+                                    buttonLabel={isCancelling ? 'Cancelling...' : 'Cancel'}
+                                    onButtonClick={handleCancelSubscription}
+                                    disabled={!subscription || subscription.status !== 'active'}
                                 />
                             </Tab.Pane>
                         </Tab.Content>
